@@ -7,6 +7,11 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      console.log(url);
+      console.log(baseUrl);
+      return "/forms";
+    },
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
