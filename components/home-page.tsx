@@ -1,23 +1,51 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 import { Session } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
+import { useState } from "react";
 
 export function HomePage({ session }: { session: Session | null }) {
-  const handleLoginWithGoogle = async () => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [formUrl, setFormUrl] = useState<string | null>(null);
+
+  const handleLoginWithGoogle = () => {
     signIn();
+    toast({
+      title: "Logged in successfully",
+      description: "You've been logged in with Google.",
+    });
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     signOut();
+    setFormUrl(null);
+    toast({
+      title: "Logged out successfully",
+      description: "You've been logged out.",
+    });
   };
 
   const handleGenerateGoogleForm = async () => {
+    setIsGenerating(true);
+    setFormUrl(null);
+
+    // API call to generate Google Form
     const response = await fetch("/api/forms", { method: "POST" });
     const data: { result: string; url?: string } = await response.json();
     if (data.result === "failed") return;
     if (!data.url) return;
+
+    const generatedUrl = `${data.url}`;
+    setFormUrl(generatedUrl);
+    setIsGenerating(false);
+
+    toast({
+      title: "Google Form Generated",
+      description: "Your Google Form has been generated successfully.",
+    });
     window.open(data.url, "_blank");
   };
 
@@ -34,9 +62,35 @@ export function HomePage({ session }: { session: Session | null }) {
           </Button>
         ) : (
           <div className="space-y-4">
-            <Button onClick={handleGenerateGoogleForm} className="w-full">
-              Generate Google Form
+            <Button
+              onClick={handleGenerateGoogleForm}
+              className="w-full"
+              disabled={isGenerating}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                "Generate Google Form"
+              )}
             </Button>
+            {formUrl && (
+              <div className="p-4 bg-gray-100 rounded-md">
+                <p className="text-sm font-medium text-gray-900">
+                  Generated Form URL:
+                </p>
+                <a
+                  href={formUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline break-all"
+                >
+                  {formUrl}
+                </a>
+              </div>
+            )}
             <Button
               onClick={handleLogout}
               variant="outline"
