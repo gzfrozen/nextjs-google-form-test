@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/libs/authOptions";
+import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 import { forms as googleForms } from "@googleapis/forms";
 import { OAuth2Client } from "google-auth-library";
