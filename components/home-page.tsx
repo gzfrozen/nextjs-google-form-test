@@ -50,9 +50,9 @@ export function HomePage({ session }: { session: Session | null }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div className="rounded-lg bg-white p-8 shadow-md">
-        <h1 className="mb-6 text-center text-2xl font-bold text-black">
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Welcome to Form Generator
         </h1>
 
@@ -94,7 +94,7 @@ export function HomePage({ session }: { session: Session | null }) {
             <Button
               onClick={handleLogout}
               variant="outline"
-              className="w-full text-black"
+              className="w-full text-gray-800"
             >
               Logout
             </Button>
